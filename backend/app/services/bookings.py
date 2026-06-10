@@ -17,7 +17,9 @@ def create_booking(payload: BookingCreate) -> Booking:
     if not slot:
         raise HTTPException(status_code=404, detail="时段不存在")
     if slot.status != "available":
-        raise HTTPException(status_code=409, detail="该时段不可预约")
+        if slot.status == "booked":
+            raise HTTPException(status_code=409, detail="该时段已被预约，请重新选择")
+        raise HTTPException(status_code=409, detail="该时段当前不可预约，请重新选择")
 
     member = store.members.get(payload.member_id)
     if not member:

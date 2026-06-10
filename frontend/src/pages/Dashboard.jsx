@@ -74,7 +74,13 @@ export function Dashboard() {
       setContactName('')
       await refresh()
     } catch (error) {
-      setMessage(error.message)
+      if (error.status === 409) {
+        setMessage(`${error.message}，排期已自动刷新`)
+        setSelectedSlot(null)
+        await refresh()
+      } else {
+        setMessage(error.message)
+      }
     }
   }
 
